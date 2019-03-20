@@ -3,6 +3,8 @@ package core;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import util.EC;
 
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.Security;
 
 public class BlockChainStarter {
@@ -15,5 +17,9 @@ public class BlockChainStarter {
         // 타원 곡선 객체를 생성해 개인키와 공개키를 저장합니다.
         EC ec = new EC();
         ec.generate("private.pem", "public.pem");
+
+        // 파일로 저장한 개인키와 공개키를 다시 프로그램으로 불러옵니다.
+        PrivateKey privateKey = ec.readPrivateKeyFromPemFile("private.pem");
+        PublicKey publicKey = ec.readPublicKeyFromPemFile("public.pem");
     }
 }
