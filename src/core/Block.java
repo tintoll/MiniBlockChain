@@ -2,9 +2,12 @@ package core;
 
 import util.Util;
 
+import java.math.BigInteger;
+import java.security.Signature;
 import java.util.List;
 
 public class Block {
+    private static final String ALGORITHM = "SHA1withECDSA";
 
     private int blockID;
     private String previousBlockHash;
@@ -42,9 +45,24 @@ public class Block {
         this.nonce = nonce;
         this.transactionList = transactionList;
     }
+    // 특정한 트랜잭션이 정상적인지 검증합니다.
+    private boolean verifyTransaction(Transaction transaction) throws Exception {
+        Signature signature;
+        signature = Signature.getInstance(ALGORITHM);
+        byte[] baText = transaction.getData().getBytes("UTF-8");
+        signature.initVerify(transaction.getSender());
+        signature.update(baText);
+        return signature.verify(new BigInteger(transaction.getSignature(), 16).toByteArray());
+    }
 
-    public void addTransaction(Transaction transaction) {
-        transactionList.add(transaction);
+    // 정상적인 트랜잭션에 한해서 블록에 추가합니다.
+    public void addTransaction(Transaction transaction) throws Exception {
+        if(verifyTransaction(transaction)) {
+            System.out.println("정상적인 트랜잭션을 발견 ");
+            transactionList.add(transaction);
+        } else {
+            System.out.println("트랜잭션이 바르게 인증되지 않았습니다. ");
+        }
     }
 
     public void showInformation() {
