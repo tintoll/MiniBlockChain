@@ -65,16 +65,17 @@ public class EC {
 
     // 문자열 형태의 인증서에서 개인키를 추출하는 함수
     public PublicKey readPublicKeyFromPemFile(String publicKeyName)
-            throws FileNotFoundException, IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+            throws FileNotFoundException, IOException, NoSuchAlgorithmException,
+            InvalidKeySpecException {
         String data = readString(publicKeyName);
-        System.out.println("EC 개인키를 "+publicKeyName+"로부터 불러왔습니다.");
-        System.out.println(data);
+        System.out.println("EC 개인키를 " + publicKeyName + "로부터 불러왔습니다.");
+        System.out.print(data);
 
         // 불필요한 설명 구문을 제거합니다.
-        data = data.replaceAll("-----BEGIN EC PRIVATE KEY-----","");
-        data = data.replaceAll("-----END EC PRIVATE KEY-----","");
+        data = data.replaceAll("-----BEGIN EC PUBLIC KEY-----", "");
+        data = data.replaceAll("-----END EC PUBLIC KEY-----", "");
 
-        // PEM 파일은 Base64로 인코딩 되어 있으므로 디코딩해서 읽을 수 있도록 합니다.
+        // PEM 파일은 Base64로 인코딩 되어있으므로 디코딩해서 읽을 수 있도록 합니다.
         byte[] decoded = Base64.decode(data);
         X509EncodedKeySpec spec = new X509EncodedKeySpec(decoded);
         KeyFactory factory = KeyFactory.getInstance("ECDSA");
